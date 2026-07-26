@@ -1,1 +1,48 @@
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "Loader"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = game:GetService("CoreGui")
 
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.fromOffset(260, 150)
+Frame.Position = UDim2.new(0.5, -130, 0.5, -75)
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.BorderSizePixel = 0
+Frame.Parent = ScreenGui
+
+Instance.new("UICorner", Frame)
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.BackgroundTransparency = 1
+Title.Text = "Project Loader"
+Title.TextColor3 = Color3.new(1,1,1)
+Title.TextScaled = true
+Title.Font = Enum.Font.GothamBold
+Title.Parent = Frame
+
+local FakeDH = Instance.new("TextButton")
+FakeDH.Size = UDim2.new(0.8, 0, 0, 35)
+FakeDH.Position = UDim2.new(0.1, 0, 0.35, 0)
+FakeDH.Text = "Fake DH"
+FakeDH.Font = Enum.Font.Gotham
+FakeDH.TextScaled = true
+FakeDH.Parent = Frame
+
+local Universal = FakeDH:Clone()
+Universal.Position = UDim2.new(0.1, 0, 0.65, 0)
+Universal.Text = "Universal"
+Universal.Parent = Frame
+
+local function Load(url)
+    ScreenGui:Destroy()
+    loadstring(game:HttpGet(url))()
+end
+
+FakeDH.MouseButton1Click:Connect(function()
+    Load("https://raw.githubusercontent.com/09z8/project/main/fake_dh.lua")
+end)
+
+Universal.MouseButton1Click:Connect(function()
+    Load("https://raw.githubusercontent.com/09z8/project/main/universal.lua")
+end)
