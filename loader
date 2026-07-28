@@ -1,38 +1,212 @@
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "Loader"
 ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = game:GetService("CoreGui")
 
-local Frame = Instance.new("Frame")
-Frame.Size = UDim2.fromOffset(260, 150)
-Frame.Position = UDim2.new(0.5, -130, 0.5, -75)
-Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-Frame.BorderSizePixel = 0
-Frame.Parent = ScreenGui
+local W, H = 338, 225
+local BW  = math.floor(W * 0.8)
+local BH  = 46
 
-Instance.new("UICorner", Frame)
+local Shadow = Instance.new("Frame")
+Shadow.Name = "Shadow"
+Shadow.Size = UDim2.fromOffset(W + 24, H + 24)
+Shadow.Position = UDim2.new(0.5, -(W + 24) / 2 + 4, 0.5, -(H + 24) / 2 + 6)
+Shadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Shadow.BackgroundTransparency = 0.6
+Shadow.BorderSizePixel = 0
+Shadow.ZIndex = 1
+Shadow.Parent = ScreenGui
+Instance.new("UICorner", Shadow).CornerRadius = UDim.new(0, 18)
+
+local Frame = Instance.new("Frame")
+Frame.Name = "Main"
+Frame.Size = UDim2.fromOffset(W, H)
+Frame.Position = UDim2.new(0.5, -W / 2, 0.5, -H / 2)
+Frame.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
+Frame.BorderSizePixel = 0
+Frame.ZIndex = 2
+Frame.Parent = ScreenGui
+local FrameCorner = Instance.new("UICorner", Frame)
+FrameCorner.CornerRadius = UDim.new(0, 14)
+
+-- subtle border stroke
+local Stroke = Instance.new("UIStroke", Frame)
+Stroke.Color = Color3.fromRGB(70, 70, 100)
+Stroke.Thickness = 1.2
+Stroke.Transparency = 0.3
+
+local AccentBar = Instance.new("Frame")
+AccentBar.Name = "AccentBar"
+AccentBar.Size = UDim2.new(1, 0, 0, 3)
+AccentBar.Position = UDim2.new(0, 0, 0, 0)
+AccentBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+AccentBar.BorderSizePixel = 0
+AccentBar.ZIndex = 3
+AccentBar.Parent = Frame
+local AccentCorner = Instance.new("UICorner", AccentBar)
+AccentCorner.CornerRadius = UDim.new(0, 14)
+
+local AccentGrad = Instance.new("UIGradient", AccentBar)
+AccentGrad.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0,   Color3.fromRGB(120,  80, 255)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200,  80, 255)),
+    ColorSequenceKeypoint.new(1,   Color3.fromRGB(255, 100, 180)),
+})
+AccentGrad.Rotation = 0
 
 local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, 0, 0, 40)
+Title.Name = "Title"
+Title.Size = UDim2.new(1, -20, 0, 50)
+Title.Position = UDim2.new(0, 10, 0, 6)
 Title.BackgroundTransparency = 1
 Title.Text = "Project Loader"
-Title.TextColor3 = Color3.new(1,1,1)
+Title.TextColor3 = Color3.fromRGB(235, 235, 255)
 Title.TextScaled = true
 Title.Font = Enum.Font.GothamBold
+Title.ZIndex = 3
 Title.Parent = Frame
 
-local FakeDH = Instance.new("TextButton")
-FakeDH.Size = UDim2.new(0.8, 0, 0, 35)
-FakeDH.Position = UDim2.new(0.1, 0, 0.35, 0)
-FakeDH.Text = "Fake DH"
-FakeDH.Font = Enum.Font.Gotham
-FakeDH.TextScaled = true
-FakeDH.Parent = Frame
+local Sub = Instance.new("TextLabel")
+Sub.Name = "Sub"
+Sub.Size = UDim2.new(1, -20, 0, 18)
+Sub.Position = UDim2.new(0, 10, 0, 52)
+Sub.BackgroundTransparency = 1
+Sub.Text = "select a script to load"
+Sub.TextColor3 = Color3.fromRGB(120, 120, 150)
+Sub.TextSize = 12
+Sub.Font = Enum.Font.Gotham
+Sub.ZIndex = 3
+Sub.Parent = Frame
 
-local Universal = FakeDH:Clone()
-Universal.Position = UDim2.new(0.1, 0, 0.65, 0)
-Universal.Text = "Universal"
-Universal.Parent = Frame
+local Divider = Instance.new("Frame")
+Divider.Size = UDim2.new(1, -30, 0, 1)
+Divider.Position = UDim2.new(0, 15, 0, 74)
+Divider.BackgroundColor3 = Color3.fromRGB(55, 55, 75)
+Divider.BorderSizePixel = 0
+Divider.ZIndex = 3
+Divider.Parent = Frame
+
+local function makeButton(yOffset, label, accent1, accent2)
+    local Btn = Instance.new("TextButton")
+    Btn.Size = UDim2.fromOffset(BW, BH)
+    Btn.Position = UDim2.new(0.5, -BW / 2, 0, yOffset)
+    Btn.BackgroundColor3 = Color3.fromRGB(35, 35, 48)
+    Btn.BorderSizePixel = 0
+    Btn.Text = ""
+    Btn.AutoButtonColor = false
+    Btn.ZIndex = 3
+    Btn.Parent = Frame
+
+    local BtnCorner = Instance.new("UICorner", Btn)
+    BtnCorner.CornerRadius = UDim.new(0, 10)
+
+    local BtnStroke = Instance.new("UIStroke", Btn)
+    BtnStroke.Color = accent1
+    BtnStroke.Thickness = 1
+    BtnStroke.Transparency = 0.5
+
+    local BtnGrad = Instance.new("UIGradient", Btn)
+    BtnGrad.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(48, 44, 72)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 28, 48)),
+    })
+    BtnGrad.Rotation = 90
+
+    local BtnLabel = Instance.new("TextLabel")
+    BtnLabel.Size = UDim2.new(1, 0, 1, 0)
+    BtnLabel.BackgroundTransparency = 1
+    BtnLabel.Text = label
+    BtnLabel.TextColor3 = Color3.fromRGB(220, 220, 255)
+    BtnLabel.TextSize = 15
+    BtnLabel.Font = Enum.Font.GothamSemibold
+    BtnLabel.ZIndex = 4
+    BtnLabel.Parent = Btn
+
+    -- hover glow
+    Btn.MouseEnter:Connect(function()
+        BtnStroke.Transparency = 0
+        BtnGrad.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(70, 58, 110)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 40, 85)),
+        })
+        BtnLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    end)
+    Btn.MouseLeave:Connect(function()
+        BtnStroke.Transparency = 0.5
+        BtnGrad.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(48, 44, 72)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 28, 48)),
+        })
+        BtnLabel.TextColor3 = Color3.fromRGB(220, 220, 255)
+    end)
+    Btn.MouseButton1Down:Connect(function()
+        BtnGrad.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, accent1),
+            ColorSequenceKeypoint.new(1, accent2),
+        })
+    end)
+    Btn.MouseButton1Up:Connect(function()
+        BtnGrad.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(70, 58, 110)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 40, 85)),
+        })
+    end)
+
+    return Btn
+end
+
+local FakeDH = makeButton(90, "Fake DH",
+    Color3.fromRGB(140, 80, 255),
+    Color3.fromRGB(80, 40, 180))
+
+local FakeDHNote = Instance.new("TextLabel")
+FakeDHNote.Name = "FakeDHNote"
+FakeDHNote.Size = UDim2.fromOffset(BW, 20)
+FakeDHNote.Position = UDim2.new(0.5, -BW / 2, 0, 90 + BH + 3)
+FakeDHNote.BackgroundTransparency = 1
+FakeDHNote.Text = "⚠ wont work on der hood"
+FakeDHNote.TextColor3 = Color3.fromRGB(200, 120, 60)
+FakeDHNote.TextSize = 11
+FakeDHNote.Font = Enum.Font.Gotham
+FakeDHNote.TextXAlignment = Enum.TextXAlignment.Center
+FakeDHNote.ZIndex = 4
+FakeDHNote.Parent = Frame
+
+local Universal = makeButton(90 + BH + 28, "Universal",
+    Color3.fromRGB(80, 180, 255),
+    Color3.fromRGB(40, 100, 200))
+
+local dragging, dragStart, frameStart
+local function syncShadow()
+    Shadow.Position = UDim2.new(
+        0, Frame.AbsolutePosition.X - 12,
+        0, Frame.AbsolutePosition.Y - 10
+    )
+end
+
+Frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging  = true
+        dragStart  = input.Position
+        frameStart = Frame.Position
+    end
+end)
+Frame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        Frame.Position = UDim2.new(
+            frameStart.X.Scale, frameStart.X.Offset + delta.X,
+            frameStart.Y.Scale, frameStart.Y.Offset + delta.Y
+        )
+        syncShadow()
+    end
+end)
 
 local function Load(url)
     ScreenGui:Destroy()
