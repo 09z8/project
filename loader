@@ -4,16 +4,16 @@ ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = game:GetService("CoreGui")
 
-local W, H = 338, 225
-local BW  = math.floor(W * 0.8)
-local BH  = 46
+local W, H = 338, 225          
+local BW = math.floor(W * 0.8)   
+local BH = 46                     
 
 local Shadow = Instance.new("Frame")
 Shadow.Name = "Shadow"
-Shadow.Size = UDim2.fromOffset(W + 24, H + 24)
-Shadow.Position = UDim2.new(0.5, -(W + 24) / 2 + 4, 0.5, -(H + 24) / 2 + 6)
-Shadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Shadow.BackgroundTransparency = 0.6
+Shadow.Size = UDim2.fromOffset(W + 20, H + 20)
+Shadow.Position = UDim2.new(0.5, -(W + 20) / 2 + 2, 0.5, -(H + 20) / 2 + 3)
+Shadow.BackgroundColor3 = Color3.fromRGB(200, 80, 255)
+Shadow.BackgroundTransparency = 0.5
 Shadow.BorderSizePixel = 0
 Shadow.ZIndex = 1
 Shadow.Parent = ScreenGui
@@ -30,40 +30,26 @@ Frame.Parent = ScreenGui
 local FrameCorner = Instance.new("UICorner", Frame)
 FrameCorner.CornerRadius = UDim.new(0, 14)
 
--- subtle border stroke
 local Stroke = Instance.new("UIStroke", Frame)
-Stroke.Color = Color3.fromRGB(70, 70, 100)
-Stroke.Thickness = 1.2
-Stroke.Transparency = 0.3
-
-local AccentBar = Instance.new("Frame")
-AccentBar.Name = "AccentBar"
-AccentBar.Size = UDim2.new(1, 0, 0, 3)
-AccentBar.Position = UDim2.new(0, 0, 0, 0)
-AccentBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-AccentBar.BorderSizePixel = 0
-AccentBar.ZIndex = 3
-AccentBar.Parent = Frame
-local AccentCorner = Instance.new("UICorner", AccentBar)
-AccentCorner.CornerRadius = UDim.new(0, 14)
-
-local AccentGrad = Instance.new("UIGradient", AccentBar)
-AccentGrad.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0,   Color3.fromRGB(120,  80, 255)),
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200,  80, 255)),
-    ColorSequenceKeypoint.new(1,   Color3.fromRGB(255, 100, 180)),
+Stroke.Thickness = 2
+Stroke.Transparency = 0
+local StrokeGrad = Instance.new("UIGradient", Stroke)
+StrokeGrad.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(120, 80, 255)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 80, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 100, 180)),
 })
-AccentGrad.Rotation = 0
+StrokeGrad.Rotation = 45
 
 local Title = Instance.new("TextLabel")
 Title.Name = "Title"
 Title.Size = UDim2.new(1, -20, 0, 50)
 Title.Position = UDim2.new(0, 10, 0, 6)
 Title.BackgroundTransparency = 1
-Title.Text = "Project Loader"
+Title.Text = "e=mc² Loader"
 Title.TextColor3 = Color3.fromRGB(235, 235, 255)
 Title.TextScaled = true
-Title.Font = Enum.Font.GothamBold
+Title.Font = Enum.Font.GothamMedium
 Title.ZIndex = 3
 Title.Parent = Frame
 
@@ -87,9 +73,9 @@ Divider.BorderSizePixel = 0
 Divider.ZIndex = 3
 Divider.Parent = Frame
 
-local function makeButton(yOffset, label, accent1, accent2)
+local function makeButton(yOffset, height, label, accent1, accent2)
     local Btn = Instance.new("TextButton")
-    Btn.Size = UDim2.fromOffset(BW, BH)
+    Btn.Size = UDim2.fromOffset(BW, height)
     Btn.Position = UDim2.new(0.5, -BW / 2, 0, yOffset)
     Btn.BackgroundColor3 = Color3.fromRGB(35, 35, 48)
     Btn.BorderSizePixel = 0
@@ -114,16 +100,15 @@ local function makeButton(yOffset, label, accent1, accent2)
     BtnGrad.Rotation = 90
 
     local BtnLabel = Instance.new("TextLabel")
-    BtnLabel.Size = UDim2.new(1, 0, 1, 0)
+    BtnLabel.Size = UDim2.new(1, 0, 0, BH)
     BtnLabel.BackgroundTransparency = 1
     BtnLabel.Text = label
     BtnLabel.TextColor3 = Color3.fromRGB(220, 220, 255)
     BtnLabel.TextSize = 15
-    BtnLabel.Font = Enum.Font.GothamSemibold
+    BtnLabel.Font = Enum.Font.GothamMedium
     BtnLabel.ZIndex = 4
     BtnLabel.Parent = Btn
 
-    -- hover glow
     Btn.MouseEnter:Connect(function()
         BtnStroke.Transparency = 0
         BtnGrad.Color = ColorSequence.new({
@@ -156,39 +141,40 @@ local function makeButton(yOffset, label, accent1, accent2)
     return Btn
 end
 
-local FakeDH = makeButton(90, "Fake DH",
-    Color3.fromRGB(140, 80, 255),
-    Color3.fromRGB(80, 40, 180))
+local FakeDHHeight = BH + 26
+local FakeDH = makeButton(85, FakeDHHeight, "Fake DH", Color3.fromRGB(140, 80, 255), Color3.fromRGB(80, 40, 180))
 
-local FakeDHNote = Instance.new("TextLabel")
-FakeDHNote.Name = "FakeDHNote"
-FakeDHNote.Size = UDim2.fromOffset(BW, 20)
-FakeDHNote.Position = UDim2.new(0.5, -BW / 2, 0, 90 + BH + 3)
-FakeDHNote.BackgroundTransparency = 1
-FakeDHNote.Text = "⚠ wont work on der hood"
-FakeDHNote.TextColor3 = Color3.fromRGB(200, 120, 60)
-FakeDHNote.TextSize = 11
-FakeDHNote.Font = Enum.Font.Gotham
-FakeDHNote.TextXAlignment = Enum.TextXAlignment.Center
-FakeDHNote.ZIndex = 4
-FakeDHNote.Parent = Frame
+local Note1 = Instance.new("TextLabel", FakeDH)
+Note1.Size = UDim2.new(1, 0, 0, 12)
+Note1.Position = UDim2.new(0, 0, 0, BH - 8)
+Note1.BackgroundTransparency = 1
+Note1.Text = "⚠ wont work on der hood"
+Note1.TextColor3 = Color3.fromRGB(200, 120, 60)
+Note1.TextSize = 10
+Note1.Font = Enum.Font.Gotham
+Note1.ZIndex = 4
 
-local Universal = makeButton(90 + BH + 28, "Universal",
-    Color3.fromRGB(80, 180, 255),
-    Color3.fromRGB(40, 100, 200))
+local Note2 = Instance.new("TextLabel", FakeDH)
+Note2.Size = UDim2.new(1, 0, 0, 12)
+Note2.Position = UDim2.new(0, 0, 0, BH + 6)
+Note2.BackgroundTransparency = 1
+Note2.Text = "HOLD 1 GUN UNTIL LOADED"
+Note2.TextColor3 = Color3.fromRGB(255, 100, 180)
+Note2.TextSize = 11
+Note2.Font = Enum.Font.GothamBold
+Note2.ZIndex = 4
+
+local Universal = makeButton(85 + FakeDHHeight + 10, BH, "Universal", Color3.fromRGB(80, 180, 255), Color3.fromRGB(40, 100, 200))
 
 local dragging, dragStart, frameStart
 local function syncShadow()
-    Shadow.Position = UDim2.new(
-        0, Frame.AbsolutePosition.X - 12,
-        0, Frame.AbsolutePosition.Y - 10
-    )
+    Shadow.Position = UDim2.new(0, Frame.AbsolutePosition.X - 10, 0, Frame.AbsolutePosition.Y - 10)
 end
 
 Frame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging  = true
-        dragStart  = input.Position
+        dragging = true
+        dragStart = input.Position
         frameStart = Frame.Position
     end
 end)
@@ -200,10 +186,7 @@ end)
 game:GetService("UserInputService").InputChanged:Connect(function(input)
     if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
         local delta = input.Position - dragStart
-        Frame.Position = UDim2.new(
-            frameStart.X.Scale, frameStart.X.Offset + delta.X,
-            frameStart.Y.Scale, frameStart.Y.Offset + delta.Y
-        )
+        Frame.Position = UDim2.new(frameStart.X.Scale, frameStart.X.Offset + delta.X, frameStart.Y.Scale, frameStart.Y.Offset + delta.Y)
         syncShadow()
     end
 end)
